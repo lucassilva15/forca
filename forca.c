@@ -36,7 +36,11 @@ int jachutou(char letra) {
 }
 
 void dicas (){
-	if(numeroDicas > 0){
+	if(mostraDica == 1){
+		printf("A dica já está sendo exibida \n");
+	}
+
+	if(numeroDicas > 0 && mostraDica == 0){
 		printf("Você acabou de utilizar uma dica: -1\n");
 		numeroDicas--;
 		mostraDica = 1;
@@ -164,19 +168,6 @@ int verificaNumero() {
 
 int geraNumero() {
 
-  if (numerosGerados == data.quantidadePalavras) {
-    char temp;
-    printf("Todas palavras foram usadas!\n");
-    printf("Deseja adicionar uma nova palavra: S/N");
-    getchar();
-    scanf("%c", & temp);
-    if (toupper(temp) == 'S') {
-      novaPalavra();
-    } else {
-      exit(0);
-    }
-  }
-
   numeroAleatorio = rand() % data.quantidadePalavras;
   while (!verificaNumero()) {
     numeroAleatorio = rand() % data.quantidadePalavras;
@@ -197,9 +188,7 @@ void escolhePalavra() {
   }
 
   strcpy(data.palavra, strtok(tmp, ";"));
-  printf("%s\n", data.palavra);
   strcpy(data.dica, strtok(NULL, ";"));
-  printf("%s\n", data.dica);
 
   fclose(p);
 }
@@ -242,13 +231,15 @@ char palavras[][50] = {
     "CARRO",
     "BANANA",
     "UNIVATES",
-    "ACADEMIA"
+    "ACADEMIA",
+		"CACHORRO"
   };
   char dicas[][50] = {
     "AUTOMOVEL",
     "FRUTA",
     "UNIVESIDADE",
-    "LOCAL"
+    "LOCAL",
+		"ANIMAL"
   };
 
 	for (int i = 0; i < 4; i++) {
@@ -277,7 +268,7 @@ int main(int argc, char *argv[]) {
 		strcpy(data.filename, "bd.csv");
 	}
 	if(argc == 2){
-		strcpy(data.filename, argv[0]); 
+		strcpy(data.filename, argv[1]); 
 	}
 	
 		
@@ -310,6 +301,7 @@ int main(int argc, char *argv[]) {
             getchar();
             zerarPartida();
             numerosGerados = 0;
+						numeroDicas = 0;
             break;
           }
           if (ganhou()) {
@@ -318,6 +310,7 @@ int main(int argc, char *argv[]) {
             getchar();
             getchar();
             numerosGerados = 0;
+						numeroDicas = 0;
             break;
           }
           getchar();
