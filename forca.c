@@ -6,6 +6,7 @@
 #define SIZE 50
 
 typedef struct {
+	char filename[SIZE];
   int quantidadePalavras;
   char palavra[SIZE];
   char dica[SIZE];
@@ -121,20 +122,7 @@ void chuta() {
 }
 
 void novaPalavra() {
-  p = fopen("bd.csv", "r+");
-
-  char palavras[][50] = {
-    "CARRO",
-    "BANANA",
-    "UNIVATES",
-    "ACADEMIA"
-  };
-  char dicas[][50] = {
-    "AUTOMOVEL",
-    "FRUTA",
-    "UNIVESIDADE",
-    "LOCAL"
-  };
+  p = fopen(data.filename, "r+");
 
   printf("Digite a nova palavra: ");
   scanf("%[^\n]s", data.palavra);
@@ -142,11 +130,6 @@ void novaPalavra() {
   printf("Digite a dica para essa palavra: ");
   scanf("%[^\n]s", data.dica);
   getchar();
-
-  for (int i = 0; i < 4; i++) {
-    fprintf(p, "%s", palavras[i]);
-    fprintf(p, ";%s\n", dicas[i]);
-  }
 
   fseek(p, 0, SEEK_END);
   fprintf(p, "%s", data.palavra);
@@ -158,15 +141,16 @@ void novaPalavra() {
 
 void contarPalavras() {
   char c;
-  p = fopen("bd.csv", "r");
+  p = fopen(data.filename, "r");
   data.quantidadePalavras = 0;
 
   while (!feof(p)) {
     c = fgetc(p);
-    if (c == '\n') {
+    if (c == '\n' || c == '\0') {
       data.quantidadePalavras++;
     }
   }
+	fclose(p);
 }
 
 int verificaNumero() {
@@ -204,7 +188,7 @@ int geraNumero() {
 
 void escolhePalavra() {
 
-  p = fopen("bd.csv", "r");
+  p = fopen(data.filename, "r");
 
   numeroAleatorio = geraNumero();
 
@@ -251,10 +235,54 @@ void menu() {
   printf("Qual a opção você deseja: ");
 }
 
-int main() {
+void criaArquivo (){
+	p = fopen(data.filename, "w");
 
+char palavras[][50] = {
+    "CARRO",
+    "BANANA",
+    "UNIVATES",
+    "ACADEMIA"
+  };
+  char dicas[][50] = {
+    "AUTOMOVEL",
+    "FRUTA",
+    "UNIVESIDADE",
+    "LOCAL"
+  };
+
+	for (int i = 0; i < 4; i++) {
+    fprintf(p, "%s", palavras[i]);
+    fprintf(p, ";%s\n", dicas[i]);
+  }
+
+	data.quantidadePalavras = 4;
+	fclose(p);
+}
+
+void verificaArquivo(){
+	p = fopen(data.filename, "r");
+	if(!p){
+		criaArquivo();
+	}
+	else if(p){
+		fclose(p);
+		contarPalavras();
+	}
+}
+
+int main(int argc, char *argv[]) {
+	
+	if(argc != 2){
+		strcpy(data.filename, "bd.csv");
+	}
+	if(argc == 2){
+		strcpy(data.filename, argv[0]); 
+	}
+	
+		
   int select = 1;
-  contarPalavras();
+  verificaArquivo();
 
   while (select != 0) {
     menu();
@@ -302,8 +330,7 @@ int main() {
 
     case 2:
       {
-        getchar();
-        getchar();
+				getchar();
         novaPalavra();
         break;
       }
