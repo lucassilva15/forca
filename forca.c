@@ -1,7 +1,5 @@
 #include <stdio.h>
-
 #include <time.h>
-
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -21,6 +19,9 @@ char tmp[60];
 int chutesdados = 0;
 int numerosGerados = 0;
 int numeroAleatorio;
+int numeroDeDicas = 0;
+int numeroDicas = 0;
+int mostraDica = 0;
 
 int jachutou(char letra) {
   int achou = 0;
@@ -33,7 +34,20 @@ int jachutou(char letra) {
   return achou;
 }
 
+void dicas (){
+	if(numeroDicas > 0){
+		printf("Você acabou de utilizar uma dica: -1\n");
+		numeroDicas--;
+		mostraDica = 1;
+	}
+	else{
+		printf("Você não possui dicas para utilizar...\n");
+	}
+}
+
 int letraexiste(char letra) {
+	if(letra == '0'){return 1;}
+
   for (int j = 0; j < strlen(data.palavra); j++) {
     if (letra == data.palavra[j]) {
       return 1;
@@ -52,8 +66,9 @@ int chuteserrados() {
   return erros;
 }
 
-void zerarChutes() {
+void zerarPartida() {
   chutesdados = 0;
+	mostraDica = 0;
   for (int i = 0; i < strlen(data.chutes); i++) {
     data.chutes[i] = '\0';
   }
@@ -74,6 +89,8 @@ void desenhaforca() {
   printf("_|___           \n");
   printf("\n\n");
   printf("%d palavra de %d\n", numerosGerados, data.quantidadePalavras);
+	printf("Você possui %d dica(s)\n", numeroDicas);
+	if(mostraDica == 1){printf("A dica é %s\n", data.dica);}
   for (int i = 0; i < strlen(data.palavra); i++) {
     if (jachutou(data.palavra[i])) {
       printf("%c ", data.palavra[i]);
@@ -86,8 +103,12 @@ void desenhaforca() {
 
 void chuta() {
   char chute;
+	printf("Para utilizar uma dica digite 0...\n");
   printf("Qual letra? ");
   scanf(" %c", & chute);
+	if(chute == '0'){
+		dicas();
+	}
   chute = toupper(chute);
 
   if (letraexiste(chute)) {
@@ -217,7 +238,7 @@ int acertouPalavra() {
       return 0;
     }
   }
-
+	numeroDicas++;
   return 1;
 }
 
@@ -259,7 +280,7 @@ int main() {
             printf("Você perdeu, pressione enter para voltar ao menu inicial! \n");
             getchar();
             getchar();
-            zerarChutes();
+            zerarPartida();
             numerosGerados = 0;
             break;
           }
@@ -274,7 +295,7 @@ int main() {
           getchar();
           getchar();
           printf("Pressione ENTER para continuar...\n");
-          zerarChutes();
+          zerarPartida();
         }
         break;
       }
