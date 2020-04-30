@@ -81,7 +81,7 @@ void zerarPartida() {
   }
 }
 
-void desenhaforca() {
+void printForca() {
   system("clear");
 
   int vezesErrou = chutouErrado();
@@ -258,6 +258,7 @@ void criaArquivo() {
     fprintf(p, "%s", palavras[i]);
     fprintf(p, ";%s\n", dicas[i]);
   }
+	data.quantidadePalavras = 5;
   fclose(p);
 }
 
@@ -285,7 +286,7 @@ int main(int argc, char * argv[]) {
 
   while (select != 0) {
     menu();
-    scanf("%d", & select);
+    scanf("%d", &select);
 
     switch (select) {
     case 0:
@@ -299,7 +300,7 @@ int main(int argc, char * argv[]) {
         while (!ganhou() && !enforcou()) {
           escolhePalavra();
           while (!acertouPalavra() && !enforcou()) {
-            desenhaforca();
+            printForca();
             chutarLetra();
           }
           printf("A palavra era: %s \n", data.palavra);
